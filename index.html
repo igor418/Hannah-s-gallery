@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hannah's Gallery</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bangers&display=swap" rel="stylesheet">
+<style>
+
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: #0a0a2e;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* =========================================
+   STARS
+   ========================================= */
+#sky {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.star {
+  position: absolute;
+  border-radius: 50%;
+  background: #fff;
+  animation: twinkle var(--d, 3s) ease-in-out var(--off, 0s) infinite;
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.9;  transform: scale(1);   }
+  50%       { opacity: 0.08; transform: scale(0.35); }
+}
+
+/* =========================================
+   LAYOUT
+   ========================================= */
+main {
+  position: relative;
+  z-index: 1;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 60px 24px 90px;
+}
+
+.hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 72px;
+}
+
+/* =========================================
+   THOUGHT BUBBLE
+   All-white shapes inside a container that has
+   CSS filter:drop-shadow to produce a clean,
+   unified outline around the whole cloud form.
+   ========================================= */
+.cloud-wrapper {
+  position: relative;
+  width: 420px;
+  height: 220px;
+  margin-bottom: 10px;
+  filter:
+    drop-shadow( 3px  0px 0 #0d0d4a)
+    drop-shadow(-3px  0px 0 #0d0d4a)
+    drop-shadow( 0px  3px 0 #0d0d4a)
+    drop-shadow( 0px -3px 0 #0d0d4a)
+    drop-shadow( 2px  2px 0 #0d0d4a)
+    drop-shadow(-2px  2px 0 #0d0d4a)
+    drop-shadow( 2px -2px 0 #0d0d4a)
+    drop-shadow(-2px -2px 0 #0d0d4a);
+}
+
+/* Bump circles — positioned so they poke above cloud-body
+   and overlap into it (hidden by the body's higher z-index) */
+.cloud-bump {
+  position: absolute;
+  background: #fff;
+  border-radius: 50%;
+  z-index: 1;
+}
+
+.b1 { width:  76px; height:  76px; left:  22px; top: 44px; }
+.b2 { width:  96px; height:  96px; left:  90px; top: 22px; }
+.b3 { width: 116px; height: 116px; left: 152px; top:  6px; }
+.b4 { width:  96px; height:  96px; left: 234px; top: 22px; }
+.b5 { width:  76px; height:  76px; left: 322px; top: 44px; }
+
+/* Main pill body — sits on top (z-index:2) and covers the
+   lower halves of the bumps, leaving only their tops visible */
+.cloud-body {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 420px;
+  height: 140px;
+  background: #fff;
+  border-radius: 70px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 80px;
+}
+
+.cloud-text {
+  font-family: 'Bangers', cursive;
+  font-size: 1.85rem;
+  color: #0d0d4a;
+  letter-spacing: 1.5px;
+  text-align: center;
+  line-height: 1.3;
+}
+
+/* =========================================
+   BUBBLE TRAIL
+   Dots from cloud down to Hannah's head:
+   large (near cloud) → small (near head)
+   ========================================= */
+.trail {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 16px;
+  filter:
+    drop-shadow( 2px  0px 0 #0d0d4a)
+    drop-shadow(-2px  0px 0 #0d0d4a)
+    drop-shadow( 0px  2px 0 #0d0d4a)
+    drop-shadow( 0px -2px 0 #0d0d4a);
+}
+
+.dot { background: #fff; border-radius: 50%; }
+.dot-lg { width: 20px; height: 20px; }
+.dot-md { width: 13px; height: 13px; }
+.dot-sm { width:  7px; height:  7px; }
+
+/* =========================================
+   HANNAH'S PHOTO
+   ========================================= */
+.photo-ring {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 3px solid rgba(255, 255, 255, 0.18);
+  box-shadow:
+    0 0 28px rgba(150, 170, 255, 0.22),
+    0 0 65px rgba(120, 150, 255, 0.10);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.photo-ring img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* =========================================
+   GALLERY
+   ========================================= */
+.gallery {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 28px;
+}
+
+.painting {
+  border-radius: 8px;
+  overflow: hidden;
+  aspect-ratio: 4 / 3;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow:
+    0 0 18px rgba(255, 255, 255, 0.09),
+    0 0 40px rgba(200, 215, 255, 0.05);
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.painting:hover {
+  transform: translateY(-4px);
+  box-shadow:
+    0 0 30px rgba(255, 255, 255, 0.20),
+    0 0 65px rgba(200, 215, 255, 0.12);
+}
+
+.painting img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.4s ease;
+}
+
+.painting:hover img { transform: scale(1.04); }
+
+</style>
+</head>
+<body>
+
+<div id="sky"></div>
+
+<main>
+
+  <section class="hero">
+
+    <!-- Thought bubble cloud -->
+    <div class="cloud-wrapper">
+      <div class="cloud-bump b1"></div>
+      <div class="cloud-bump b2"></div>
+      <div class="cloud-bump b3"></div>
+      <div class="cloud-bump b4"></div>
+      <div class="cloud-bump b5"></div>
+      <div class="cloud-body">
+        <p class="cloud-text">What is going on<br>Hannah's mind?</p>
+      </div>
+    </div>
+
+    <!-- Trail: large dot near cloud → small dot near head -->
+    <div class="trail">
+      <div class="dot dot-lg"></div>
+      <div class="dot dot-md"></div>
+      <div class="dot dot-sm"></div>
+    </div>
+
+    <!-- Hannah's photo -->
+    <div class="photo-ring">
+      <img src="hannah.jpg" alt="Hannah thinking">
+    </div>
+
+  </section>
+
+  <section class="gallery">
+    <div class="painting"><img src="painting1.jpg" alt="Painting 1" onerror="this.closest('.painting').remove()"></div>
+    <div class="painting"><img src="painting2.jpg" alt="Painting 2" onerror="this.closest('.painting').remove()"></div>
+    <div class="painting"><img src="painting3.jpg" alt="Painting 3" onerror="this.closest('.painting').remove()"></div>
+    <div class="painting"><img src="painting4.jpg" alt="Painting 4" onerror="this.closest('.painting').remove()"></div>
+    <div class="painting"><img src="painting5.jpg" alt="Painting 5" onerror="this.closest('.painting').remove()"></div>
+    <div class="painting"><img src="painting6.jpg" alt="Painting 6" onerror="this.closest('.painting').remove()"></div>
+  </section>
+
+</main>
+
+<script>
+(function () {
+  const sky  = document.getElementById('sky');
+  const frag = document.createDocumentFragment();
+
+  for (let i = 0; i < 300; i++) {
+    const el   = document.createElement('div');
+    const rand = Math.random();
+    const size = rand < 0.55 ? 1 : rand < 0.85 ? 2 : 3;
+
+    el.className = 'star';
+    el.style.cssText =
+      'width:'  + size + 'px;' +
+      'height:' + size + 'px;' +
+      'left:'   + (Math.random() * 100).toFixed(2) + '%;' +
+      'top:'    + (Math.random() * 100).toFixed(2) + '%;' +
+      '--d:'    + (2 + Math.random() * 4).toFixed(1) + 's;' +
+      '--off:-' + (Math.random() * 6).toFixed(1) + 's;';
+
+    frag.appendChild(el);
+  }
+
+  sky.appendChild(frag);
+}());
+</script>
+
+</body>
+</html>
